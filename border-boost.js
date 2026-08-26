@@ -87,3 +87,12 @@
   `;
   document.head.appendChild(style);
 })();
+
+// 남/여 연승 기준 기능 로드
+(function(){
+  if(document.querySelector('script[data-gender-streak-loader]'))return;
+  const s=document.createElement('script');
+  s.dataset.genderStreakLoader='yes';
+  s.src='gender-streak.js?v=1';
+  document.body.appendChild(s);
+})();
