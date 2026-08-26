@@ -74,7 +74,6 @@ async function submitSelfJoin(){
         rejected=true; return;
       }
       sameName.clientId=uid;
-      // 방장이 미리 배정한 선수가 있으면 기존 팀을 유지
       logRoom(r,`${sameName.name} 참가 접속.`);
       return;
     }
@@ -161,7 +160,7 @@ async function initFirebase(){
     return false;
   }
   try{
-    const config={"apiKey":"AIzaSyCrtuTyDr4nkFu_gl6qw6BiT3xS7ngG0G0","authDomain":"ladder-bingo-multi.firebaseapp.com","databaseURL":"https://ladder-bingo-multi-default-rtdb.asia-southeast1.firebasedatabase.app","projectId":"ladder-bingo-multi","storageBucket":"ladder-bingo-multi.firebasestorage.app","messagingSenderId":"1029029860880","appId":"1:1029029860880:web:5e98fac7fda6290eae9c95"};
+    const config={"apiKey":"AIzaSyCrtuTyDr4nkFu_gl6qw6BiT3xS7ngGOG0","authDomain":"ladder-bingo-multi.firebaseapp.com","databaseURL":"https://ladder-bingo-multi-default-rtdb.asia-southeast1.firebasedatabase.app","projectId":"ladder-bingo-multi","storageBucket":"ladder-bingo-multi.firebasestorage.app","messagingSenderId":"1029029860880","appId":"1:1029029860880:web:5e98fac7fda6290eae9c95"};
     const appMod=await import('https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js');
     const dbMod=await import('https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js');
     const authMod=await import('https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js');
