@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>도랑이네 래더빙고</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="welcome" class="welcome">
+  <div class="welcome-card">
+    <div class="hero">
+      <div class="biglogo">🎮</div>
+      <h1>도랑이네 래더빙고</h1>
+      <p>여러 PC가 같은 방에 접속해 실시간으로 함께 쓰는 도랑이네 래더빙고</p><div class="pill" style="margin-top:10px">🔥 GitHub Pages + Firebase 실시간 서버</div>
+    </div>
+    <div class="entry-grid">
+      <section class="entry">
+        <h2>👑 새 방 만들기</h2>
+        <div class="field"><label>방 이름</label><input id="createTitle" value="도랑이네 래더빙고"></div>
+        <div class="field"><label>게임 모드</label>
+          <div class="mode-select">
+            <div class="mode-choice active" data-create-mode="bingo"><b>🎯 일반 래더빙고</b><small>빙고 줄 완성 경쟁</small></div>
+            <div class="mode-choice" data-create-mode="land"><b>🗺️ 땅따먹기</b><small>점령 칸·점유율 경쟁</small></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label>팀 A</label><input id="createA" value="BLUE"></div>
+          <div class="field"><label>팀 B</label><input id="createB" value="PINK"></div>
+        </div>
+        <button id="createRoomBtn" class="btn primary" style="width:100%">방 만들기</button>
+      </section>
+
+      <section class="entry">
+        <h2>🚪 기존 방 참가</h2>
+        <div class="field"><label>방 코드</label><input id="joinCode" placeholder="예: A7K2Q9" maxlength="10"></div>
+        <button id="joinRoomBtn" class="btn" style="width:100%">방 참가하기</button>
+        <div class="divider"></div>
+        <div class="setup-note">
+          ✅ 지금 파일을 직접 열면 <b>로컬 테스트 모드</b>로 실행돼.<br>
+          GitHub Pages에 올리면 Firebase 실시간 서버에 자동 연결돼.<br>
+          🧹 생성 후 <b>7일 지난 방은 자동 정리</b>돼.
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="mainApp" class="app hidden">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🎮</div>
+      <div>
+        <h1 id="roomTitle">래더빙고</h1>
+        <div class="sub">방 코드 <b id="roomCodeTop">------</b> · <span id="roleText">참가자</span> · <span id="expiryText"></span></div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="pill"><span id="connDot" class="dot"></span><span id="connText">연결 확인 중</span></span>
+      <button id="copyJoinBtn" class="btn">🔗 참가 링크 복사</button>
+      <button id="openBroadcastBtn" class="btn">📺 송출 화면 열기</button>
+      <button id="myInfoBtn" class="btn participant-only">👤 내 정보</button>
+      <button id="copyBroadcastBtn" class="btn host-only">📋 송출 링크 복사</button>
+      
+      <button id="leaveBtn" class="btn">나가기</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel left">
+      <h2>🏠 방 정보</h2>
+      <div class="field host-only"><label>방 이름</label><input id="settingsTitle"></div>
+      <div class="mode-tabs host-only">
+        <button id="modeBingoBtn" class="mode-tab">🎯 래더빙고</button>
+        <button id="modeLandBtn" class="mode-tab">🗺️ 땅따먹기</button>
+      </div>
+
+      <div class="host-only">
+        <div class="row">
+          <div class="field"><label>팀 A</label><input id="settingsA"></div>
+          <div class="field"><label>팀 B</label><input id="settingsB"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>보드 크기</label><select id="settingsSize"><option>5</option><option>6</option><option selected>7</option><option>8</option><option>9</option></select></div>
+          <div class="field"><label>연승 기준</label><input id="settingsStreak" type="number" min="2" max="20" value="3"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>점수 최소</label><input id="settingsMinScore" type="number" value="8"></div>
+          <div class="field"><label>점수 최대</label><input id="settingsMaxScore" type="number" value="60"></div>
+        </div>
+        <div class="muted">설정한 구간 안에서 보드 칸 수만큼 숫자를 중복 없이 랜덤 배치해.</div>
+        <div class="field"><label>상대 칸 탈환</label><select id="settingsCapture"><option value="yes">허용</option><option value="no" selected>금지</option></select></div>
+        <div class="row">
+          <button id="saveSettingsBtn" class="btn">설정 저장</button>
+          <button id="newBoardBtn" class="btn danger">새 보드</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <h2>👥 선수 명단</h2>
+      <div class="host-only">
+        <div class="row">
+          <div class="field"><label id="bulkALabel">팀 A</label><textarea id="bulkA" placeholder="한 줄에 한 명&#10;또는 쉼표로 입력"></textarea></div>
+          <div class="field"><label id="bulkBLabel">팀 B</label><textarea id="bulkB" placeholder="한 줄에 한 명&#10;또는 쉼표로 입력"></textarea></div>
+        </div>
+        <button id="applyRosterBtn" class="btn primary" style="width:100%">명단 전체 적용</button>
+      </div>
+      <div id="roster" class="roster" style="margin-top:9px"></div>
+    </aside>
+
+    <main class="panel center">
+      <div class="broadcast-title"><h1 id="broadcastTitle">래더빙고</h1><p id="broadcastSub"></p></div>
+      <div class="teamcards">
+        <div class="teamcard a">
+          <div class="name" id="scoreAName">BLUE</div>
+          <div id="scoreABig" class="big">0</div>
+          <div id="scoreAMini" class="mini">0 BINGO</div>
+        </div>
+        <div class="teamcard b">
+          <div class="name" id="scoreBName">PINK</div>
+          <div id="scoreBBig" class="big">0</div>
+          <div id="scoreBMini" class="mini">0 BINGO</div>
+        </div>
+      </div>
+      <div class="boardbox"><div id="board" class="board"></div></div>
+    </main>
+
+    <aside class="panel right">
+      <h2>🏁 경기 결과 입력</h2>
+      <div id="myPlayerSummary" class="selfjoin-info participant-only" style="margin-bottom:8px">참가자 정보를 확인 중...</div>
+      <div class="field"><label>선수</label><select id="resultPlayer"></select></div>
+      <div class="row">
+        <button id="winBtn" class="btn primary">승리</button>
+        <button id="lossBtn" class="btn">패배</button>
+      </div>
+      <div class="field"><label>승리 시 획득 점수</label><input id="gainScore" type="number" placeholder="+점수"></div>
+      <button id="applyResultBtn" class="btn primary" style="width:100%">결과 적용</button>
+      <div id="pendingStatus" class="status">선수를 선택하고 경기 결과를 입력해줘.</div>
+
+      <div class="bonusbox">
+        <span>🔵 보너스 <b id="bonusA">0</b></span>
+        <span>🌸 보너스 <b id="bonusB">0</b></span>
+      </div>
+      <div class="row" style="margin-top:7px">
+        <button id="useBonusA" class="btn a">A 보너스 사용</button>
+        <button id="useBonusB" class="btn b">B 보너스 사용</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="row">
+        <h2 style="margin:0;flex:1">🧾 진행 기록</h2>
+        <button id="undoBtn" class="btn host-only" style="flex:0 0 auto;padding:6px 9px">↩ 되돌리기</button>
+      </div>
+      <div id="log" class="log" style="margin-top:8px"></div>
+    </aside>
+  </div>
+</div>
+
+
+<div id="joinPlayerModal" class="modalback hidden">
+  <div class="modal join-player-card">
+    <h2>👤 참가자 등록</h2>
+    <p class="muted">이 방에서 사용할 자기 이름을 입력하고 팀을 선택해줘. 한 번 등록하면 이 PC에서는 자동으로 기억해.</p>
+    <div class="field">
+      <label>내 이름</label>
+      <input id="selfJoinName" maxlength="30" placeholder="예: 최도랑">
+    </div>
+    <div class="field">
+      <label>내 팀</label>
+      <div class="join-team-grid">
+        <button id="selfJoinTeamA" class="join-team-btn a active" type="button">BLUE</button>
+        <button id="selfJoinTeamB" class="join-team-btn b" type="button">PINK</button>
+      </div>
+    </div>
+    <button id="selfJoinSubmit" class="btn primary" style="width:100%">이 이름으로 참가하기</button>
+    <button id="selfJoinCancel" class="btn" style="width:100%;margin-top:7px">방 나가기</button>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app-core.js"></script>
+<script src="app-ui.js"></script>
+</body>
+</html>
