@@ -2,10 +2,38 @@
 // 1) 기본 팀명: 도랑팀 / 남의팀
 // 2) 왼쪽 설정창은 항상 표시
 // 3) 선수 명단은 빙고판 아래로 이동
+// 4) 방 코드는 화면에 숨기고 방장만 복사 버튼으로 공유
 (function(){
   const a=$('createA'), b=$('createB');
   if(a && (!a.value || a.value==='BLUE')) a.value='도랑팀';
   if(b && (!b.value || b.value==='PINK')) b.value='남의팀';
+
+  function applyRoomCodeShare(){
+    const roomCodeBox=document.querySelector('.room-code-box');
+    if(roomCodeBox) roomCodeBox.style.display='none';
+
+    const actions=document.querySelector('.top-actions');
+    if(!actions || document.getElementById('copyRoomCodeBtn')) return;
+
+    const btn=document.createElement('button');
+    btn.id='copyRoomCodeBtn';
+    btn.className='btn host-only';
+    btn.textContent='📋 방 코드 복사';
+    btn.onclick=async()=>{
+      if(!roomCode){toast('복사할 방 코드가 없어.');return;}
+      try{
+        await navigator.clipboard.writeText(roomCode);
+        toast(`방 코드 ${roomCode} 복사 완료!`);
+      }catch(e){
+        console.warn('room code copy failed',e);
+        toast(`방 코드: ${roomCode}`);
+      }
+    };
+
+    const joinBtn=document.getElementById('copyJoinBtn');
+    if(joinBtn) actions.insertBefore(btn,joinBtn);
+    else actions.appendChild(btn);
+  }
 
   function applyDashboardLayout(){
     const left=document.querySelector('.panel.left');
@@ -50,11 +78,13 @@
     if(settingsStatic && settingsStatic.parentElement===left && left.firstElementChild!==settingsStatic){
       left.prepend(settingsStatic);
     }
+
+    applyRoomCodeShare();
   }
 
   // 레이아웃 전용 CSS 주입
   const style=document.createElement('style');
-  style.id='dorang-layout-v3';
+  style.id='dorang-layout-v4';
   style.textContent=`
     .layout{grid-template-columns:285px minmax(540px,1fr) 325px!important;gap:10px!important;}
     .settings-static{display:block;margin:0;}
@@ -64,6 +94,8 @@
     .settings-static .btn{padding:8px 9px!important;font-size:11px!important;}
     .settings-static .muted{font-size:10px!important;line-height:1.4;}
     .settings-static .mode-tabs{margin-bottom:8px!important;}
+
+    .room-code-box{display:none!important;}
 
     .center{overflow:auto!important;}
     .boardbox{flex:0 0 auto!important;min-height:0!important;overflow:visible!important;padding:2px 2px 5px!important;}
@@ -93,12 +125,14 @@
 
   // DOM이 이미 만들어져 있으므로 즉시 재배치
   applyDashboardLayout();
+  applyRoomCodeShare();
 
   // 기본 팀명 마이그레이션
   let tries=0;
   const timer=setInterval(async()=>{
     tries++;
     applyDashboardLayout();
+    applyRoomCodeShare();
     if(typeof currentRoom!=='undefined' && currentRoom){
       if(typeof isHost==='function' && isHost() && currentRoom.teamA==='BLUE' && currentRoom.teamB==='PINK'){
         try{
