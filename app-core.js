@@ -177,8 +177,22 @@ async function initFirebase(){
   }catch(e){
     console.error('Firebase init failed:',e);
     cloudEnabled=false;
-    setConn(false,'서버 연결 실패');
-    toast('Firebase 서버 연결에 실패했어. 새로고침 후 다시 확인해줘.');
+    const code=e?.code||e?.name||'unknown';
+    const message=e?.message||String(e)||'알 수 없는 오류';
+    setConn(false,`연결 실패 · ${code}`);
+    if($('connText')) $('connText').title=message;
+    toast(`Firebase 오류: ${code}`);
+    const box=document.querySelector('.setup-note');
+    if(box){
+      let detail=document.getElementById('firebaseErrorDetail');
+      if(!detail){
+        detail=document.createElement('div');
+        detail.id='firebaseErrorDetail';
+        detail.style.cssText='margin-top:10px;padding:10px;border-radius:10px;background:#fff1f2;color:#9f1239;font-weight:700;word-break:break-word';
+        box.appendChild(detail);
+      }
+      detail.textContent=`Firebase 연결 오류: ${code} · ${message}`;
+    }
     return false;
   }
 }
