@@ -306,3 +306,28 @@ input:focus,select:focus,textarea:focus{
   `;
   document.head.appendChild(style);
 })();
+
+// 빙고판에는 + 기호 없이 숫자만 표시한다.
+(function(){
+  function cleanBoardNumbers(){
+    if(!window.currentRoom && typeof currentRoom==='undefined') return;
+    const room=typeof currentRoom!=='undefined'?currentRoom:null;
+    if(!room?.board)return;
+    document.querySelectorAll('#board .cell').forEach((cell,i)=>{
+      const textNode=[...cell.childNodes].find(n=>n.nodeType===Node.TEXT_NODE);
+      if(textNode && room.board[i]) textNode.nodeValue=String(room.board[i].score);
+    });
+  }
+
+  try{
+    const baseRender=render;
+    render=function(){
+      const out=baseRender.apply(this,arguments);
+      cleanBoardNumbers();
+      setTimeout(cleanBoardNumbers,0);
+      return out;
+    };
+  }catch(e){console.warn('board number cleanup hook failed',e);}
+
+  cleanBoardNumbers();
+})();
