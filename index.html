@@ -48,21 +48,26 @@
 </div>
 
 <div id="mainApp" class="app hidden">
-  <header class="topbar">
+  <header class="topbar" style="height:auto;min-height:78px;flex-wrap:wrap">
     <div class="brand">
       <div class="logo">🎮</div>
       <div>
         <h1 id="roomTitle">래더빙고</h1>
-        <div class="sub">방 코드 <b id="roomCodeTop">------</b> · <span id="roleText">참가자</span> · <span id="expiryText"></span></div>
+        <div class="sub"><span id="roleText">참가자</span> · <span id="expiryText"></span></div>
       </div>
     </div>
+
+    <div style="display:flex;align-items:center;gap:12px;padding:7px 18px;border:2px solid #ffd166;border-radius:15px;background:#1b2030;box-shadow:0 0 22px rgba(255,209,102,.18);white-space:nowrap">
+      <span style="font-size:13px;font-weight:900;color:#ffd166">방 코드</span>
+      <b id="roomCodeTop" style="font-size:30px;line-height:1;letter-spacing:5px;color:#fff;font-family:ui-monospace,Consolas,monospace">------</b>
+    </div>
+
     <div class="top-actions">
       <span class="pill"><span id="connDot" class="dot"></span><span id="connText">연결 확인 중</span></span>
       <button id="copyJoinBtn" class="btn">🔗 참가 링크 복사</button>
       <button id="openBroadcastBtn" class="btn">📺 송출 화면 열기</button>
       <button id="myInfoBtn" class="btn participant-only">👤 내 정보</button>
       <button id="copyBroadcastBtn" class="btn host-only">📋 송출 링크 복사</button>
-      
       <button id="leaveBtn" class="btn">나가기</button>
     </div>
   </header>
@@ -156,7 +161,6 @@
     </aside>
   </div>
 </div>
-
 
 <div id="joinPlayerModal" class="modalback hidden">
   <div class="modal join-player-card">
