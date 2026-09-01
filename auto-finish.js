@@ -13,13 +13,23 @@
     return !!r?.board?.length && r.board.every(c=>!!c.owner);
   }
 
+  function playerRemainingMs(r,p,now=Date.now()){
+    if(!p)return Infinity;
+    const totalSec=Math.max(1,Number(r?.timer?.durationSec||3600));
+    if(!p.timerStarted)return totalSec*1000;
+    if(p.timerFinished||p.overtimeUsed)return 0;
+    if(p.timerRunning)return Math.max(0,Number(p.timerEndAt||0)-now);
+    return Math.max(0,Number(p.timerRemainingSec??totalSec)*1000);
+  }
+
   function allTimersDone(r){
     if(!r?.timer?.enabled)return false;
     const players=Array.isArray(r.players)?r.players:[];
     if(!players.length)return false;
-    // 시작하지 않은 선수는 아직 자기 시간을 쓰지 않은 상태이므로 종료로 보지 않는다.
-    // 00:00 후 마지막 진행 중 경기까지 반영돼 timerFinished/overtimeUsed가 된 선수만 종료 처리.
-    return players.every(p=>!!p.timerStarted && (!!p.timerFinished || !!p.overtimeUsed));
+    // 선수별 타이머를 사용하는 구조이므로 모든 등록 선수가 한 번은 시작해야 경기 시간 종료가 성립한다.
+    // 마지막 결과 입력 여부(timerFinished/overtimeUsed)를 기다리지 않고 실제 남은 시간이 00:00이면 즉시 종료한다.
+    const now=Date.now();
+    return players.every(p=>!!p.timerStarted && playerRemainingMs(r,p,now)<=0);
   }
 
   function statsOf(r){
@@ -83,6 +93,10 @@
           if(p.timerRunning){
             p.timerRemainingSec=Math.ceil(Math.max(0,Number(p.timerEndAt||0)-endedAt)/1000);
           }
+          if(reason==='time'){
+            p.timerRemainingSec=0;
+            p.timerFinished=true;
+          }
           p.timerRunning=false;
           p.timerEndAt=0;
           p.gameActive=false;
@@ -105,7 +119,7 @@
   }
 
   function reasonText(g){
-    return g.reason==='board'?'빙고판의 모든 칸이 채워져 경기가 종료됐어.':'모든 선수의 개별 시간이 종료돼 경기가 끝났어.';
+    return g.reason==='board'?'빙고판의 모든 칸이 채워져 경기가 종료됐어.':'모든 선수의 개별 시간이 00:00이 되어 즉시 경기가 끝났어.';
   }
 
   function decisionText(g){
