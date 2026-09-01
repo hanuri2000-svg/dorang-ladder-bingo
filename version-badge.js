@@ -3,7 +3,7 @@
   if(window.__dorangVersionBadgeLoaded)return;
   window.__dorangVersionBadgeLoaded=true;
 
-  const VERSION='1.0.0';
+  const VERSION='1.0.1';
   window.DORANG_APP_VERSION=VERSION;
 
   const style=document.createElement('style');
