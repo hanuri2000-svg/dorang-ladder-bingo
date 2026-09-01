@@ -97,7 +97,7 @@
   document.body.appendChild(s);
 })();
 
-// 페이지 기본 UI가 모두 만들어진 뒤 기본 방설정/선수별 타이머/송출/입력/레이아웃 보정 기능을 순서대로 로드한다.
+// 페이지 기본 UI가 모두 만들어진 뒤 기본 방설정/선수별 타이머/송출/입력/레이아웃/자동종료 기능을 순서대로 로드한다.
 window.addEventListener('load',()=>{
   const files=[
     ['default-room-settings.js?v=1','default-room-settings-loader'],
@@ -107,7 +107,8 @@ window.addEventListener('load',()=>{
     ['broadcast-timer-display-fix.js?v=3','broadcast-timer-display-fix-loader'],
     ['enter-submit.js?v=1','enter-submit-loader'],
     ['layout-balance.js?v=1','layout-balance-loader'],
-    ['click-score.js?v=1','click-score-loader']
+    ['click-score.js?v=1','click-score-loader'],
+    ['auto-finish.js?v=1','auto-finish-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
