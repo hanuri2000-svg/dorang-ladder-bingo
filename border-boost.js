@@ -97,13 +97,14 @@
   document.body.appendChild(s);
 })();
 
-// 페이지 기본 UI가 모두 만들어진 뒤 타이머/송출 보정 기능을 순서대로 로드한다.
+// 페이지 기본 UI가 모두 만들어진 뒤 타이머/송출/입력 보정 기능을 순서대로 로드한다.
 window.addEventListener('load',()=>{
   const files=[
     ['timer-karaoke.js?v=1','timer-karaoke-loader'],
     ['timer-hms.js?v=1','timer-hms-loader'],
     ['broadcast-fit.js?v=1','broadcast-fit-loader'],
-    ['broadcast-timer-display-fix.js?v=2','broadcast-timer-display-fix-loader']
+    ['broadcast-timer-display-fix.js?v=2','broadcast-timer-display-fix-loader'],
+    ['enter-submit.js?v=1','enter-submit-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
