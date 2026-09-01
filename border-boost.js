@@ -97,22 +97,21 @@
   document.body.appendChild(s);
 })();
 
-// 페이지 기본 UI가 모두 만들어진 뒤 브랜드/버전/방장등록/기본 방설정/선수별 타이머/송출/입력/레이아웃/자동종료/치킨 UI 기능을 순서대로 로드한다.
+// 자동 승패 판정은 사용하지 않는다. 노래방룰의 마지막 경기 결과까지 수동 입력한다.
 window.addEventListener('load',()=>{
   const files=[
     ['brand-logo.js?v=2','brand-logo-loader'],
-    ['version-badge.js?v=4','version-badge-loader'],
+    ['version-badge.js?v=5','version-badge-loader'],
     ['host-create.js?v=1','host-create-loader'],
     ['default-room-settings.js?v=1','default-room-settings-loader'],
     ['player-timer.js?v=1','player-timer-loader'],
     ['timer-hms.js?v=2','timer-hms-loader'],
     ['broadcast-fit.js?v=1','broadcast-fit-loader'],
-    ['broadcast-timer-display-fix.js?v=5','broadcast-timer-display-fix-loader'],
+    ['broadcast-timer-display-fix.js?v=6','broadcast-timer-display-fix-loader'],
     ['enter-submit.js?v=1','enter-submit-loader'],
     ['layout-balance.js?v=1','layout-balance-loader'],
     ['click-score.js?v=1','click-score-loader'],
-    ['auto-finish.js?v=2','auto-finish-loader'],
-    ['time-over-result-fix.js?v=1','time-over-result-fix-loader'],
+    ['manual-result-mode.js?v=1','manual-result-mode-loader'],
     ['chicken-ui.js?v=2','chicken-ui-loader']
   ];
   files.forEach(([src,key])=>{
