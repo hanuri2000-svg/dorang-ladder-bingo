@@ -96,3 +96,19 @@
   s.src='gender-streak.js?v=1';
   document.body.appendChild(s);
 })();
+
+// 페이지 기본 UI가 모두 만들어진 뒤 타이머/송출 자동맞춤 기능을 마지막에 로드한다.
+window.addEventListener('load',()=>{
+  const files=[
+    ['timer-karaoke.js?v=1','timer-karaoke-loader'],
+    ['broadcast-fit.js?v=1','broadcast-fit-loader']
+  ];
+  files.forEach(([src,key])=>{
+    if(document.querySelector(`script[data-${key}]`))return;
+    const s=document.createElement('script');
+    s.setAttribute(`data-${key}`,'yes');
+    s.src=src;
+    s.async=false;
+    document.body.appendChild(s);
+  });
+});
