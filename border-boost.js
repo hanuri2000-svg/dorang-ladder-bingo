@@ -112,7 +112,7 @@ window.addEventListener('load',()=>{
     ['click-score.js?v=1','click-score-loader'],
     ['auto-finish.js?v=2','auto-finish-loader'],
     ['time-over-result-fix.js?v=1','time-over-result-fix-loader'],
-    ['chicken-ui.js?v=1','chicken-ui-loader']
+    ['chicken-ui.js?v=2','chicken-ui-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
