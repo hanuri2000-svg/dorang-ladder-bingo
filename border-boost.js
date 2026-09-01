@@ -97,14 +97,16 @@
   document.body.appendChild(s);
 })();
 
-// 페이지 기본 UI가 모두 만들어진 뒤 선수별 타이머/송출/입력 보정 기능을 순서대로 로드한다.
+// 페이지 기본 UI가 모두 만들어진 뒤 선수별 타이머/송출/입력/레이아웃 보정 기능을 순서대로 로드한다.
 window.addEventListener('load',()=>{
   const files=[
     ['player-timer.js?v=1','player-timer-loader'],
     ['timer-hms.js?v=2','timer-hms-loader'],
     ['broadcast-fit.js?v=1','broadcast-fit-loader'],
     ['broadcast-timer-display-fix.js?v=3','broadcast-timer-display-fix-loader'],
-    ['enter-submit.js?v=1','enter-submit-loader']
+    ['enter-submit.js?v=1','enter-submit-loader'],
+    ['layout-balance.js?v=1','layout-balance-loader'],
+    ['click-score.js?v=1','click-score-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
