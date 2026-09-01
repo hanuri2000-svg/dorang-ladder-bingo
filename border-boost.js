@@ -101,7 +101,7 @@
 window.addEventListener('load',()=>{
   const files=[
     ['brand-logo.js?v=2','brand-logo-loader'],
-    ['version-badge.js?v=1','version-badge-loader'],
+    ['version-badge.js?v=2','version-badge-loader'],
     ['default-room-settings.js?v=1','default-room-settings-loader'],
     ['player-timer.js?v=1','player-timer-loader'],
     ['timer-hms.js?v=2','timer-hms-loader'],
@@ -110,7 +110,8 @@ window.addEventListener('load',()=>{
     ['enter-submit.js?v=1','enter-submit-loader'],
     ['layout-balance.js?v=1','layout-balance-loader'],
     ['click-score.js?v=1','click-score-loader'],
-    ['auto-finish.js?v=2','auto-finish-loader']
+    ['auto-finish.js?v=2','auto-finish-loader'],
+    ['time-over-result-fix.js?v=1','time-over-result-fix-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
