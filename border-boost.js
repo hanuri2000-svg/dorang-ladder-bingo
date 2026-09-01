@@ -97,9 +97,10 @@
   document.body.appendChild(s);
 })();
 
-// 페이지 기본 UI가 모두 만들어진 뒤 선수별 타이머/송출/입력/레이아웃 보정 기능을 순서대로 로드한다.
+// 페이지 기본 UI가 모두 만들어진 뒤 기본 방설정/선수별 타이머/송출/입력/레이아웃 보정 기능을 순서대로 로드한다.
 window.addEventListener('load',()=>{
   const files=[
+    ['default-room-settings.js?v=1','default-room-settings-loader'],
     ['player-timer.js?v=1','player-timer-loader'],
     ['timer-hms.js?v=2','timer-hms-loader'],
     ['broadcast-fit.js?v=1','broadcast-fit-loader'],
