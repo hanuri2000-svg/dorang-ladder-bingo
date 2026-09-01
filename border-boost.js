@@ -109,7 +109,7 @@ window.addEventListener('load',()=>{
     ['enter-submit.js?v=1','enter-submit-loader'],
     ['layout-balance.js?v=1','layout-balance-loader'],
     ['click-score.js?v=1','click-score-loader'],
-    ['auto-finish.js?v=1','auto-finish-loader']
+    ['auto-finish.js?v=2','auto-finish-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
