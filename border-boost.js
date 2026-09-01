@@ -97,11 +97,13 @@
   document.body.appendChild(s);
 })();
 
-// 페이지 기본 UI가 모두 만들어진 뒤 타이머/송출 자동맞춤 기능을 마지막에 로드한다.
+// 페이지 기본 UI가 모두 만들어진 뒤 타이머/송출 보정 기능을 순서대로 로드한다.
 window.addEventListener('load',()=>{
   const files=[
     ['timer-karaoke.js?v=1','timer-karaoke-loader'],
-    ['broadcast-fit.js?v=1','broadcast-fit-loader']
+    ['timer-hms.js?v=1','timer-hms-loader'],
+    ['broadcast-fit.js?v=1','broadcast-fit-loader'],
+    ['broadcast-timer-display-fix.js?v=2','broadcast-timer-display-fix-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
