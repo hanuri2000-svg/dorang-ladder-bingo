@@ -1,7 +1,7 @@
-// 도랑이네 래더빙고 - 송출 전용 안정 타이머 + 경기 결과 표시
+// 도랑이네 래더빙고 - 송출 전용 안정 타이머 (노래방룰 / 자동 결과 없음)
 (function(){
-  if(window.__dorangBroadcastTimerDisplayFixV5)return;
-  window.__dorangBroadcastTimerDisplayFixV5=true;
+  if(window.__dorangBroadcastTimerDisplayFixV6)return;
+  window.__dorangBroadcastTimerDisplayFixV6=true;
 
   const isBroadcast=()=>typeof broadcast!=='undefined'&&broadcast;
   function formatTime(ms){
@@ -18,22 +18,14 @@
     if(p.timerRunning)return Math.max(0,Number(p.timerEndAt||0)-Date.now());
     return Math.max(0,Number(p.timerRemainingSec??durationSec())*1000);
   }
-  function startedPlayers(){
-    return (currentRoom?.players||[]).filter(p=>p.timerStarted);
-  }
-  function runningPlayers(){
-    return startedPlayers().filter(p=>!p.timerFinished&&!p.overtimeUsed&&remainingMs(p)>0);
-  }
+  function startedPlayers(){return (currentRoom?.players||[]).filter(p=>p.timerStarted);}
+  function unfinishedPlayers(){return startedPlayers().filter(p=>!p.timerFinished&&!p.overtimeUsed);}
+  function runningPlayers(){return unfinishedPlayers().filter(p=>(remainingMs(p)??0)>0);}
+  function awaitingLastResult(){return unfinishedPlayers().filter(p=>(remainingMs(p)??Infinity)<=0);}
   function displayPlayer(){
-    const started=startedPlayers();
-    if(!started.length)return null;
-    // 송출은 가장 늦게 끝나는 선수의 남은 시간을 보여준다.
-    // 그래야 TIME OVER가 곧 '모든 시작 선수 시간 종료'를 의미한다.
-    return [...started].sort((a,b)=>(remainingMs(b)??-1)-(remainingMs(a)??-1))[0]||null;
-  }
-  function allStartedPlayersDone(){
-    const players=startedPlayers();
-    return !!players.length&&players.every(p=>(remainingMs(p)??Infinity)<=0);
+    const players=unfinishedPlayers();
+    if(!players.length)return startedPlayers()[0]||null;
+    return [...players].sort((a,b)=>(remainingMs(b)??-1)-(remainingMs(a)??-1))[0]||null;
   }
 
   function ensureStableBar(){
@@ -41,7 +33,6 @@
     const center=document.querySelector('.panel.center');
     const teamcards=center?.querySelector('.teamcards');
     if(!center||!teamcards)return null;
-
     let bar=document.getElementById('broadcastStableTimerBar');
     if(!bar){
       bar=document.createElement('div');
@@ -57,42 +48,31 @@
     if(!isBroadcast())return;
     const bar=ensureStableBar();
     if(!bar)return;
-
-    const g=currentRoom?.gameOver;
     const time=bar.querySelector('#broadcastStableTime');
     const state=bar.querySelector('#broadcastStableState');
     const icon=bar.querySelector('.stable-icon');
 
     bar.classList.remove('time-over','timer-running','winner-a','winner-b','draw','game-result');
-
-    if(g?.ended){
-      bar.classList.add('game-result');
-      if(g.winner==='A')bar.classList.add('winner-a');
-      else if(g.winner==='B')bar.classList.add('winner-b');
-      else bar.classList.add('draw');
-
-      if(icon)icon.textContent=g.winner==='DRAW'?'🤝':'🏆';
-      if(time)time.textContent=g.winner==='A'?`${g.teamA} 승리!`:g.winner==='B'?`${g.teamB} 승리!`:'무승부';
-      if(state)state.textContent=`${g.aBingo} : ${g.bBingo} BINGO · ${g.aCells} : ${g.bCells}칸`;
-      return;
-    }
-
     if(icon)icon.textContent='⏱';
+
     const enabled=!!currentRoom?.timer?.enabled;
     const started=startedPlayers();
+    const unfinished=unfinishedPlayers();
     const running=runningPlayers();
+    const waiting=awaitingLastResult();
     const p=displayPlayer();
     const rem=p?remainingMs(p):null;
-    const done=enabled&&allStartedPlayersDone();
 
     if(time)time.textContent=enabled&&p?formatTime(rem):'--:--';
-    if(done)bar.classList.add('time-over');
+    if(waiting.length&&running.length===0)bar.classList.add('time-over');
     else if(running.length)bar.classList.add('timer-running');
 
     if(state){
       if(!enabled)state.textContent='타이머 미설정';
       else if(!started.length)state.textContent='진행 중 선수 없음';
-      else if(done)state.textContent='TIME OVER';
+      else if(!unfinished.length)state.textContent='모든 선수 시간 종료';
+      else if(waiting.length&&running.length===0)state.textContent='TIME OVER · 마지막 경기 결과 대기';
+      else if(waiting.length)state.textContent=`진행 중 · ${running.length}명 · 종료대기 ${waiting.length}명`;
       else state.textContent=`진행 중 · ${running.length}명`;
     }
   }
@@ -105,14 +85,12 @@
     const teamcards=center?.querySelector('.teamcards');
     const timer=ensureStableBar();
     if(!center||!board||!boardbox||!teamcards)return;
-
     const centerH=center.clientHeight,centerW=center.clientWidth;
     const teamH=teamcards.getBoundingClientRect().height;
     const timerH=timer?.getBoundingClientRect().height||0;
     const usableH=Math.max(210,centerH-teamH-timerH-48);
     const usableW=Math.max(210,centerW-28);
     const size=Math.max(210,Math.floor(Math.min(usableW,usableH)));
-
     board.style.setProperty('width',size+'px','important');
     board.style.setProperty('height',size+'px','important');
     board.style.setProperty('min-width','0','important');
@@ -123,7 +101,7 @@
   }
 
   const style=document.createElement('style');
-  style.id='dorang-broadcast-timer-display-fix-v5';
+  style.id='dorang-broadcast-timer-display-fix-v6';
   style.textContent=`
     body.broadcast{overflow:hidden!important}
     .broadcast .app{height:100vh!important;width:100vw!important;padding:5px!important;overflow:hidden!important}
@@ -137,14 +115,6 @@
     .broadcast #broadcastStableTimerBar.time-over{background:#fff0f4!important;border-color:#ff9fba!important}
     .broadcast #broadcastStableTimerBar.time-over #broadcastStableTime{color:#d65272!important}
     .broadcast #broadcastStableTimerBar.time-over #broadcastStableState{color:#bf6078!important}
-    .broadcast #broadcastStableTimerBar.game-result{height:44px!important;min-height:44px!important;flex-basis:44px!important;border-width:2px!important}
-    .broadcast #broadcastStableTimerBar.game-result #broadcastStableTime{font-size:22px!important}
-    .broadcast #broadcastStableTimerBar.game-result #broadcastStableState{font-size:11px!important}
-    .broadcast #broadcastStableTimerBar.winner-a{background:#eaf6ff!important;border-color:#79bfff!important}
-    .broadcast #broadcastStableTimerBar.winner-a #broadcastStableTime{color:#387fb9!important}
-    .broadcast #broadcastStableTimerBar.winner-b{background:#fff0f6!important;border-color:#ff9fc3!important}
-    .broadcast #broadcastStableTimerBar.winner-b #broadcastStableTime{color:#c94f7b!important}
-    .broadcast #broadcastStableTimerBar.draw{background:#f5f2fa!important;border-color:#cdbfe1!important}
     .broadcast .teamcards{flex:0 0 44px!important;min-height:44px!important;height:44px!important;width:100%!important;max-width:100%!important;margin:0 0 4px!important;gap:5px!important}
     .broadcast .teamcard{height:44px!important;min-height:44px!important;padding:5px 9px!important;box-sizing:border-box!important}
     .broadcast .teamcard .name{font-size:16px!important}.broadcast .teamcard .big{font-size:19px!important}
