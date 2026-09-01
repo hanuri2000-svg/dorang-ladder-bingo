@@ -101,9 +101,10 @@
 window.addEventListener('load',()=>{
   const files=[
     ['brand-logo.js?v=2','brand-logo-loader'],
-    ['version-badge.js?v=5','version-badge-loader'],
+    ['version-badge.js?v=6','version-badge-loader'],
     ['host-create.js?v=1','host-create-loader'],
     ['default-room-settings.js?v=1','default-room-settings-loader'],
+    ['land-capture-default.js?v=1','land-capture-default-loader'],
     ['player-timer.js?v=1','player-timer-loader'],
     ['timer-hms.js?v=2','timer-hms-loader'],
     ['broadcast-fit.js?v=1','broadcast-fit-loader'],
