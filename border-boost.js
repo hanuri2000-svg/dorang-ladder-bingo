@@ -104,7 +104,8 @@ window.addEventListener('load',()=>{
     ['timer-hms.js?v=1','timer-hms-loader'],
     ['broadcast-fit.js?v=1','broadcast-fit-loader'],
     ['broadcast-timer-display-fix.js?v=2','broadcast-timer-display-fix-loader'],
-    ['enter-submit.js?v=1','enter-submit-loader']
+    ['enter-submit.js?v=1','enter-submit-loader'],
+    ['karaoke-continuous.js?v=1','karaoke-continuous-loader']
   ];
   files.forEach(([src,key])=>{
     if(document.querySelector(`script[data-${key}]`))return;
